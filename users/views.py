@@ -142,5 +142,6 @@ class Login(ObtainAuthToken):
             'faculty': user.faculty,
             'level': user.level,
             'department': user.department,
-            'is_staff': user.is_staff
+            'is_staff': user.is_staff,
+            'lastname': user.lastname
         })
