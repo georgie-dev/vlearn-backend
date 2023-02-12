@@ -19,12 +19,12 @@ from rest_framework import routers
 from users import views
 
 router = routers.DefaultRouter()
-router.register(r'api/users', views.RegisterUsers, basename='register')
-router.register(r'api/courses', views.Courses, basename='courses')
+router.register(r'api/users', views.Users, basename='users')
+router.register(r'api/courses', views.CoursesList, basename='courses')
 
 urlpatterns = [
     path('', include(router.urls)),
     path(r'api/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-    path('login/', views.Login.as_view(), name='login')
+    path('login/', views.Login.as_view(), name='login'),
 ]

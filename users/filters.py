@@ -1,7 +1,7 @@
 import django_filters
 from .models import User, Courses
 
-class StudentFilterSet(django_filters.FilterSet):
+class UserFilterSet(django_filters.FilterSet):
     class Meta:
         model = User
         fields = ['matricNo']

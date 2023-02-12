@@ -1,21 +1,16 @@
-from django.shortcuts import render
-from django.db import IntegrityError
 from django.contrib.auth.hashers import check_password
 from .models import Courses, User
-from .serializer import UserSerializer, CourseSerializer, RegisterSerializer
-from .filters import StudentFilterSet, CoursesFilterSet
+from .serializer import CourseSerializer, UserSerializer
+from .filters import UserFilterSet, CoursesFilterSet
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db import IntegrityError
-import json
 from django.contrib.auth import login
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -28,7 +23,7 @@ User = get_user_model()
 
 
 
-class Courses(viewsets.ModelViewSet):
+class CoursesList(viewsets.ModelViewSet):
     queryset = Courses.objects.all()
     serializer_class = CourseSerializer
     filter_backends=[DjangoFilterBackend]
@@ -45,15 +40,14 @@ class Courses(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RegisterUsers(viewsets.ModelViewSet):
+class Users(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
-    serializer_class = RegisterSerializer
     queryset = User.objects.all()
+    serializer_class = UserSerializer
     filter_backends=[DjangoFilterBackend]
-    filterset_class= StudentFilterSet
+    filterset_class= UserFilterSet
 
     def create(self, request, *args, **kwargs):
-        try:
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
                 account = serializer.save()
@@ -70,14 +64,6 @@ class RegisterUsers(viewsets.ModelViewSet):
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        except IntegrityError as e:
-            account = User.objects.get(matricNo='')
-            account.delete()
-            raise ValidationError({"400": f'{str(e)}'})
-
-        except KeyError as e:
-            raise ValidationError({"400": f'Field {str(e)} missing'})
-
 
     def patch(self, request, pk):
         instance = self.get_object(pk)
@@ -89,40 +75,6 @@ class RegisterUsers(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
-
-
-# class LoginUser(viewsets.ModelViewSet):
-#     # permission_classes = [IsAuthenticated]
-#     serializer_class= UserSerializer
-#     authentication_classes= [TokenAuthentication]
-
-#     def post(self, request, *args, **kwargs):
-#         data = {}
-#         reqBody = json.loads(request.body)
-#         matricNo = reqBody['matricNo']
-#         password = reqBody['password']
-#         try:
-#             Account = User.objects.get(matricNo=matricNo)
-#         except BaseException as e:
-#             raise ValidationError({"400": f'{str(e)}'})
-
-#         token = Token.objects.get_or_create(user=Account)[0].key
-#         if not check_password(password, Account.password):
-#             raise ValidationError({"message": "Incorrect Login credentials"})
-
-#         if Account:
-#             if Account.is_active:
-#                 login(request, Account)
-#                 data["message"] = "user logged in"
-
-#                 Res = {"data": data, "token": token}
-
-#                 return Response(Res)
-#             else:
-#                 raise ValidationError({"400": f'Account not active'})
-#         else:
-#           raise ValidationError({"400": f'Field {str(e)} missing'})
 
 
 class Login(ObtainAuthToken):
@@ -143,5 +95,7 @@ class Login(ObtainAuthToken):
             'level': user.level,
             'department': user.department,
             'is_staff': user.is_staff,
-            'lastname': user.lastname
+            'lastname': user.lastname,
+            'imageUrl': user.imageUrl,
+            # 'courses': user.courses,
         })
