@@ -97,5 +97,5 @@ class Login(ObtainAuthToken):
             'is_staff': user.is_staff,
             'lastname': user.lastname,
             'imageUrl': user.imageUrl,
-            # 'courses': user.courses,
+            'courses': user.courses.values(),
         })

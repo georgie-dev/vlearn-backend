@@ -11,8 +11,8 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 
-    # courses= serializers.PrimaryKeyRelatedField(many=True, queryset=Courses.objects.all(), required=False)
-    courses= CourseSerializer(many= True)
+    courses= serializers.PrimaryKeyRelatedField(many=True, queryset=Courses.objects.all(), required=False)
+    # courses= CourseSerializer(many= True, read_only=True)
 
     class Meta:
         model = User
