@@ -11,9 +11,12 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 
+    # courses= serializers.PrimaryKeyRelatedField(many=True, queryset=Courses.objects.all(), required=False)
+    courses= CourseSerializer(many= True)
+
     class Meta:
         model = User
-        fields=['id','firstname', 'lastname', 'email', 'faculty', 'level', 'department', 'matricNo', 'password', 'imageUrl']
+        fields=['id','firstname', 'lastname', 'email', 'faculty', 'level', 'department', 'matricNo', 'password', 'imageUrl', 'courses']
 
         extra_kwargs = {"password": {"write_only": True}}
 
