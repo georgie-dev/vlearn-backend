@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import check_password
 from .models import Courses, User
 from .serializer import CourseSerializer, UserSerializer
 from .filters import UserFilterSet, CoursesFilterSet
@@ -7,10 +6,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from django_filters.rest_framework import DjangoFilterBackend
-from django.contrib.auth import login
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from django.views.decorators.csrf import csrf_exempt
 
 
 
