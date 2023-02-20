@@ -47,22 +47,6 @@ class Users(viewsets.ModelViewSet):
     filter_backends=[DjangoFilterBackend]
     filterset_class= UserFilterSet
 
-    def create(self, request, *args, **kwargs):
-            serializer = self.serializer_class(data=request.data)
-            if serializer.is_valid():
-                account = serializer.save()
-                account.is_active = True
-                account.save()
-                token = Token.objects.get_or_create(user=account)[0].key
-                data = {}
-                data["matricNo"] = account.matricNo
-                data["level"] = account.level
-                data["department"] = account.department
-                data["faculty"] = account.faculty
-                data["id"] = account.id
-                return Response(data, status=status.HTTP_201_CREATED)
-
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     def patch(self, request, pk):
@@ -88,14 +72,16 @@ class Login(ObtainAuthToken):
         return Response({
             'token': token.key,
             'user_id': user.pk,
-            'firstname': user.firstname,
+            'title': user.title,
+            'firstname': user.first_name,
+            'lastname': user.last_name,
             'email': user.email,
             'matric_no': user.matricNo,
             'faculty': user.faculty,
             'level': user.level,
             'department': user.department,
             'is_staff': user.is_staff,
-            'lastname': user.lastname,
             'imageUrl': user.imageUrl,
+            'is_staff': user.is_staff,
             'courses': user.courses.values(),
         })
