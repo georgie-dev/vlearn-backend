@@ -6,4 +6,4 @@ class CourseMaterialSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model=CourseMaterials
-        fields= ['course', 'title']
+        fields= ['id', 'course', 'title', 'lecturer', 'file', 'uploaded_at']

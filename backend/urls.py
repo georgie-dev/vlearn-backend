@@ -18,11 +18,13 @@ from django.urls import path, include
 from rest_framework import routers
 from users.views import Users, CoursesList, Login
 from files.views import CourseMaterial
+from django.conf import settings
+from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
 router.register(r'api/users', Users, basename='users')
 router.register(r'api/courses', CoursesList, basename='courses')
-router.register(r'api/coursematerials', CourseMaterial, basename='course materials')
+router.register(r'api/coursematerials', CourseMaterial, basename='courseMaterials')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -30,3 +32,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', Login.as_view(), name='login'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
