@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from users.views import Users, CoursesList, Login
-from files.views import CourseMaterial, UploadAssignmentView
+from files.views import CourseMaterial, UploadAssignmentView, SubmitAssignmentView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -26,6 +26,7 @@ router.register(r'api/users', Users, basename='users')
 router.register(r'api/courses', CoursesList, basename='courses')
 router.register(r'api/coursematerials', CourseMaterial, basename='courseMaterials')
 router.register(r'api/uploadassignment', UploadAssignmentView, basename='uploadAssignment')
+router.register(r'api/submitassignment', SubmitAssignmentView, basename='submitAssignment')
 
 
 urlpatterns = [

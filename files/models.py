@@ -16,3 +16,11 @@ class UploadAssignment(models.Model):
     due_date= models.DateTimeField()
     file= models.FileField(upload_to='upload_assignments/', null=False, blank=False)
     lecturer=models.CharField(max_length=225)
+
+class SubmitAssignment(models.Model):
+    course= models.CharField(max_length=100)
+    title= models.CharField(max_length=225, unique=True)
+    submit_date= models.DateTimeField()
+    file= models.FileField(upload_to='submitted_assignments/', null=False, blank=False)
+    student=models.CharField(max_length=225)
+
