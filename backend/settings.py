@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'files',
+    'videoclass',
     'corsheaders',
     'django_filters',
     'rest_framework.authtoken',
