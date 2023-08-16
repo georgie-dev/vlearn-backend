@@ -28,7 +28,7 @@ router.register(r'api/courses', CoursesList, basename='courses')
 router.register(r'api/coursematerials', CourseMaterial, basename='courseMaterials')
 router.register(r'api/uploadassignment', UploadAssignmentView, basename='uploadAssignment')
 router.register(r'api/submitassignment', SubmitAssignmentView, basename='submitAssignment')
-router.register(r'api/class', ClassListView.as_view(), basename='class-list')
+router.register(r'api/class', ClassListView, basename='class-list')
 
 
 urlpatterns = [

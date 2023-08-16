@@ -1,24 +1,25 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from .serializer import ClassSerializers
 from .filters import ClassFilterSet
 from .models import ClassDetails
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.views import APIView
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 # Create your views here.
-class ClassListView(APIView):
-    def get(self, request, *args, **kwargs):
-        course_codes = request.GET.get('course', '')  # Get the 'course' parameter
+class ClassListView(viewsets.ModelViewSet):
+    queryset = ClassDetails.objects.all()
+    serializer_class = ClassSerializers
+
+    @action(detail=False, methods=['GET'])
+    def filter_by_course(self, request):
+        course_codes = self.request.query_params.get('course', '')
         
         if course_codes:
-            course_code_list = course_codes.split(',')  # Split comma-separated values
-            # Now you have the list of course codes, use it for filtering
-            classes = ClassDetails.objects.filter(course__in=course_code_list)
+            course_code_list = course_codes.split(',')
+            classes = self.queryset.filter(course__in=course_code_list)
+            serialized_classes = self.serializer_class(classes, many=True)
+            return Response(serialized_classes.data)
         else:
-            classes = ClassDetails.objects.all()
-        
-        # Serialize the classes and return the response
-        serialized_classes = ClassSerializers(classes, many=True)
-        return Response(serialized_classes.data)
+            return Response("No course codes provided", status=status.HTTP_400_BAD_REQUEST)
