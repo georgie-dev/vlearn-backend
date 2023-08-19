@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users',
     'files',
     'videoclass',
+    'Quiz',
     'corsheaders',
     'django_filters',
     'rest_framework.authtoken',

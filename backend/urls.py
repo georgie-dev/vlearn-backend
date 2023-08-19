@@ -19,6 +19,7 @@ from rest_framework import routers
 from users.views import Users, CoursesList, Login
 from files.views import CourseMaterial, UploadAssignmentView, SubmitAssignmentView
 from videoclass.views import ClassListView
+from Quiz.views import QuizViewSet, QuestionViewSet, QuizSubmissionViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -29,6 +30,9 @@ router.register(r'api/coursematerials', CourseMaterial, basename='courseMaterial
 router.register(r'api/uploadassignment', UploadAssignmentView, basename='uploadAssignment')
 router.register(r'api/submitassignment', SubmitAssignmentView, basename='submitAssignment')
 router.register(r'api/class', ClassListView, basename='class-list')
+router.register(r'api/quizzes', QuizViewSet)
+router.register(r'api/questions', QuestionViewSet)
+router.register(r'api/submissions', QuizSubmissionViewSet, basename='quiz-submission')
 
 
 urlpatterns = [
