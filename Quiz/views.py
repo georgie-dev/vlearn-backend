@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Quiz, QuesModel
@@ -23,13 +24,15 @@ class QuizViewSet(viewsets.ModelViewSet):
             headers=headers,
         )
     
-class QuestionViewSet(viewsets.ModelViewSet):
-    queryset = QuesModel.objects.all()
-    serializer_class = QuestionSerializer
+class QuestionViewSet(APIView):
+    def get(self, request, *args, **kwargs):
+        questions = QuesModel.objects.all()
+        serializer = QuestionSerializer(questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        questions_data = request.data 
-        
+        questions_data = request.data  # Array of question objects
+
         serializer = QuestionSerializer(data=questions_data, many=True)
         if serializer.is_valid():
             serializer.save()

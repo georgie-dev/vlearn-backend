@@ -31,7 +31,6 @@ router.register(r'api/uploadassignment', UploadAssignmentView, basename='uploadA
 router.register(r'api/submitassignment', SubmitAssignmentView, basename='submitAssignment')
 router.register(r'api/class', ClassListView, basename='class-list')
 router.register(r'api/quizzes', QuizViewSet)
-router.register(r'api/questions', QuestionViewSet)
 router.register(r'api/submissions', QuizSubmissionViewSet, basename='quiz-submission')
 
 
@@ -40,6 +39,7 @@ urlpatterns = [
     path(r'api/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     path('login/', Login.as_view(), name='login'),
+    path('api/questions/', QuestionViewSet.as_view(), name='create-questions'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
