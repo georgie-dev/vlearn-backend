@@ -14,5 +14,3 @@ class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = '__all__'  
-
-        extra_kwargs = {"password": {"write_only": True}}
