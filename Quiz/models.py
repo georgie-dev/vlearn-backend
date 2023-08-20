@@ -4,7 +4,7 @@ from django.db import models
 
 class Quiz(models.Model):
     course =models.CharField(max_length=225)
-    assessment_type=models.CharField(max_length=225)
+    duration=models.PositiveIntegerField()
     assessment_date= models.DateTimeField()
     total_marks= models.IntegerField()
     instructions= models.TextField()
@@ -13,7 +13,7 @@ class Quiz(models.Model):
 class QuesModel(models.Model):
     quiz= models.ForeignKey (Quiz, on_delete=models.CASCADE)
     question_text = models.TextField()
-    options = models.JSONField()  # You can adjust this based on how you want to store options
+    options = models.JSONField()
     correct_option = models.PositiveIntegerField()
     
     def __str__(self):
