@@ -1,12 +1,28 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Quiz, QuesModel
+from .filters import QuizFilterSet
 from .serializer import QuizSerializer, QuestionSerializer
 
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+    filter_backends=[DjangoFilterBackend]
+    filterset_class= QuizFilterSet
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            {"id": serializer.data["id"]},  # Return the created quiz's ID
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
+    
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = QuesModel.objects.all()
     serializer_class = QuestionSerializer
