@@ -3,14 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Quiz, QuesModel
-from .filters import QuizFilterSet
+from rest_framework.decorators import action
 from .serializer import QuizSerializer, QuestionSerializer
 
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    filter_backends=[DjangoFilterBackend]
-    filterset_class= QuizFilterSet
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -23,6 +21,17 @@ class QuizViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
             headers=headers,
         )
+    @action(detail=False, methods=['GET'])
+    def filter_by_course(self, request):
+        course_codes = self.request.query_params.get('course', '')
+        
+        if course_codes:
+            course_code_list = course_codes.split(',')
+            tests = self.queryset.filter(course__in=course_code_list)
+            serialized_classes = self.serializer_class(tests, many=True)
+            return Response(serialized_classes.data)
+        else:
+            return Response("No course codes provided", status=status.HTTP_400_BAD_REQUEST)
     
 class QuestionViewSet(APIView):
     def get(self, request, *args, **kwargs):

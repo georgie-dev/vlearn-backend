@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from .serializer import ClassSerializers
-from .filters import ClassFilterSet
 from .models import ClassDetails
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
