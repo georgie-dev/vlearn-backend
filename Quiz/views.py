@@ -27,6 +27,15 @@ class QuestionViewSet(viewsets.ModelViewSet):
     queryset = QuesModel.objects.all()
     serializer_class = QuestionSerializer
 
+    def post(self, request, *args, **kwargs):
+        questions_data = request.data 
+        
+        serializer = QuestionSerializer(data=questions_data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class QuizSubmissionViewSet(viewsets.ViewSet):
     def create(self, request):
         quiz_id = request.data.get('quiz_id')
