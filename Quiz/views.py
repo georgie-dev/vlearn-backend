@@ -25,15 +25,20 @@ class QuizViewSet(viewsets.ModelViewSet):
         )
     @action(detail=False, methods=['GET'])
     def filter_by_course(self, request):
-        course_codes = self.request.query_params.get('course', '')
-        
+        course_codes = request.query_params.get('course', '')
+        quiz_id = request.query_params.get('id')
+
+        queryset = self.queryset.all()
+
         if course_codes:
             course_code_list = course_codes.split(',')
-            tests = self.queryset.filter(course__in=course_code_list)
-            serialized_classes = self.serializer_class(tests, many=True)
-            return Response(serialized_classes.data)
-        else:
-            return Response("No course codes provided", status=status.HTTP_400_BAD_REQUEST)
+            queryset = queryset.filter(course__in=course_code_list)
+
+        if quiz_id:
+            queryset = queryset.filter(id=quiz_id)
+
+        serialized_data = self.serializer_class(queryset, many=True).data
+        return Response(serialized_data)
     
 class QuestionViewSet(APIView):
     def get(self, request, *args, **kwargs):
