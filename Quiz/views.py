@@ -1,3 +1,5 @@
+from django.db.models import F, ExpressionWrapper, DateTimeField
+from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -35,7 +37,14 @@ class QuizViewSet(viewsets.ModelViewSet):
     
 class QuestionViewSet(APIView):
     def get(self, request, *args, **kwargs):
-        questions = QuesModel.objects.all()
+        quiz_id = request.query_params.get('quiz')
+        current_datetime = timezone.now()
+
+        questions = QuesModel.objects.filter(
+            quiz_id=quiz_id,
+            quiz__assessment_date__lte=current_datetime
+        )
+
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -47,7 +56,8 @@ class QuestionViewSet(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
+    
 class QuizSubmissionViewSet(viewsets.ViewSet):
     def create(self, request):
         quiz_id = request.data.get('quiz_id')
