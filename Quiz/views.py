@@ -51,38 +51,46 @@ class QuestionViewSet(APIView):
 class QuizSubmissionViewSet(viewsets.ViewSet):
     def create(self, request):
         quiz_id = request.data.get('quiz_id')
+        original_order = request.data.get('original_order')
         answers = request.data.get('answers')  # List of user's answer choices
 
         try:
             quiz = Quiz.objects.get(pk=quiz_id)
         except Quiz.DoesNotExist:
             return Response({'error': 'Quiz not found'}, status=status.HTTP_404_NOT_FOUND)
-        score=0
-        wrong=0
-        correct=0
+
+        questions = quiz  # Fetch the questions associated with the quiz
+
+        score = 0
+        wrong = 0
+        correct = 0
         total_marks = 0
+
         for answer in answers:
-            total_marks +=1
-            question_id = answer.get('question_id')
+            total_marks += 1
+            original_question_id = original_order[answer['question_index']]
+        
+            try:
+                question = next(q for q in questions if q.id == original_question_id)
+            except StopIteration:
+                return Response({'error': f'Question with ID {original_question_id} not found'}, status=status.HTTP_400_BAD_REQUEST)
+
             selected_option = answer.get('selected_option')
 
-            try:
-                question = QuesModel.objects.get(pk=question_id)
-            except QuesModel.DoesNotExist:
-                return Response({'error': f'Question with ID {question_id} not found'}, status=status.HTTP_400_BAD_REQUEST)
-
             if selected_option == question.correct_option:
-                score+=10
-                correct+=1
+                score += 10
+                correct += 1
             else:
                 wrong += 1
-            percent = score/(total_marks*10) *100
+
+        percent = score / (total_marks * 10) * 100
 
         return Response({
-            'score':score,
+            'score': score,
             'time': request.POST.get('timer'),
-            'correct':correct,
-            'wrong':wrong,
-            'percent':percent,
-            'total':total_marks
-        }, status=status.HTTP_200_OK)
+            'correct': correct,
+            'wrong': wrong,
+            'percent': percent,
+            'total': total_marks
+         }, status=status.HTTP_200_OK)
+
