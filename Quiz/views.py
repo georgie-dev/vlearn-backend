@@ -52,14 +52,14 @@ class QuizSubmissionViewSet(viewsets.ViewSet):
     def create(self, request):
         quiz_id = request.data.get('quiz_id')
         original_order = request.data.get('original_order')
-        answers = request.data.get('answers')  # List of user's answer choices
+        answers = request.data.get('answers')
 
         try:
             quiz = Quiz.objects.get(pk=quiz_id)
         except Quiz.DoesNotExist:
             return Response({'error': 'Quiz not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        questions = quiz  # Fetch the questions associated with the quiz
+        questions = QuesModel.objects.filter(quiz=quiz)
 
         score = 0
         wrong = 0
@@ -68,8 +68,13 @@ class QuizSubmissionViewSet(viewsets.ViewSet):
 
         for answer in answers:
             total_marks += 1
-            original_question_id = original_order[answer['question_id']]
-        
+            question_id = answer.get('question_id')
+            
+            if question_id is None or question_id >= len(original_order):
+                return Response({'error': f'Invalid question_id: {question_id}'}, status=status.HTTP_400_BAD_REQUEST)
+
+            original_question_id = original_order[question_id]
+
             try:
                 question = next(q for q in questions if q.id == original_question_id)
             except StopIteration:
@@ -87,7 +92,7 @@ class QuizSubmissionViewSet(viewsets.ViewSet):
 
         return Response({
             'score': score,
-            'time': request.POST.get('timer'),
+            'time': request.data.get('timer'),
             'correct': correct,
             'wrong': wrong,
             'percent': percent,

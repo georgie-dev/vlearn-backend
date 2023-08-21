@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `users_courses` (
   `department` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_courses_courseCode_48cd732c_uniq` (`courseCode`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users_courses`
