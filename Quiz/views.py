@@ -68,7 +68,7 @@ class QuizSubmissionViewSet(viewsets.ViewSet):
 
         for answer in answers:
             total_marks += 1
-            original_question_id = original_order[answer['question_index']]
+            original_question_id = original_order[answer['question_id']]
         
             try:
                 question = next(q for q in questions if q.id == original_question_id)
