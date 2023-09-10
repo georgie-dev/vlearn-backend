@@ -16,17 +16,30 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from users import views
-from rest_framework.authtoken.views import obtain_auth_token
+from users.views import Users, CoursesList, Login
+from files.views import CourseMaterial, UploadAssignmentView, SubmitAssignmentView
+from videoclass.views import ClassListView
+from Quiz.views import QuizViewSet, QuestionViewSet, QuizSubmissionViewSet
+from django.conf import settings
+from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
-router.register(r'api/users', views.RegisterUsers, basename='register')
-router.register(r'api/courses', views.Courses, basename='courses')
-router.register(r'api/login', views.LoginUser, basename='login')
+router.register(r'api/users', Users, basename='users')
+router.register(r'api/courses', CoursesList, basename='courses')
+router.register(r'api/coursematerials', CourseMaterial, basename='courseMaterials')
+router.register(r'api/uploadassignment', UploadAssignmentView, basename='uploadAssignment')
+router.register(r'api/submitassignment', SubmitAssignmentView, basename='submitAssignment')
+router.register(r'api/class', ClassListView, basename='class-list')
+router.register(r'api/quizzes', QuizViewSet)
+router.register(r'api/submissions', QuizSubmissionViewSet, basename='quiz-submission')
+
 
 urlpatterns = [
     path('', include(router.urls)),
     path(r'api/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-    path('login/', obtain_auth_token)
+    path('login/', Login.as_view(), name='login'),
+    path('api/questions/', QuestionViewSet.as_view(), name='create-questions'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

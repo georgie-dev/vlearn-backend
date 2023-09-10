@@ -29,8 +29,9 @@ class CustomUserManager(UserManager):
 
 class User(AbstractUser):
     username= None
-    firstname= models.CharField(max_length=100)
-    lastname = models.CharField(max_length=100)
+    title=models.CharField(max_length= 15, null=True)
+    first_name= models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     faculty = models.CharField(max_length=100)
     level= models.CharField(max_length=100)
@@ -38,7 +39,7 @@ class User(AbstractUser):
     matricNo = models.CharField(max_length=100, unique=True) 
     password = models.CharField(max_length=100)
     imageUrl= models.CharField(max_length=100, null=True)
-    courses= models.ManyToManyField(Courses, related_name='students', blank=True)
+    courses= models.ManyToManyField(Courses, blank=True)
     date_joined = models.DateField(max_length=100, auto_now=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

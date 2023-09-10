@@ -8,23 +8,18 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
       model=Courses
       fields=['id', 'courseCode', 'courseStatus', 'courseTitle', 'courseUnit','level', 'semester', 'department']
 
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 
-    class Meta:
-        model = User
-        fields = ['id','firstname', 'lastname', 'email', 'faculty', 'level', 'department', 'matricNo', 'password', 'imageUrl', 'date_joined']
-
-        extra_kwargs = {"password": {"write_only": True}}
-
-class RegisterSerializer(serializers.HyperlinkedModelSerializer):
-
-    courses = serializers.PrimaryKeyRelatedField(many=True, queryset=Courses.objects.all(), required=False)
+    courses= serializers.PrimaryKeyRelatedField(many=True, queryset=Courses.objects.all(), required=False)
+    # courses= CourseSerializer(many= True, read_only=True)
 
     class Meta:
         model = User
-        fields=['firstname', 'lastname', 'email', 'faculty', 'level', 'department', 'matricNo', 'password', 'imageUrl', 'courses']
+        fields=['id','first_name', 'last_name', 'email', 'faculty', 'level', 'department', 'matricNo', 'password', 'imageUrl', 'is_staff', 'courses', 'title']
 
         extra_kwargs = {"password": {"write_only": True}}
+
 
     def create(self, validated_data):
         password = validated_data.pop("password", None)
