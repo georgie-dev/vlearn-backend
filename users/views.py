@@ -8,10 +8,6 @@ from rest_framework.authtoken.models import Token
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-
-
-
-
 from django.contrib.auth import get_user_model
 
 # Create your views here.
