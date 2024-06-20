@@ -94,7 +94,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': config('MYSQLDATABASE'),
         'HOST': config('MYSQLHOST'),
         'PORT': config('MYSQLPORT'),
